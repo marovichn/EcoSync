@@ -1,0 +1,28 @@
+# Visual Studio & .NET / C#
+.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.pytest_cache/
+
+# Node / Next.js / React Native
+node_modules/
+.next/
+out/
+.expo/
+dist/
+
+# Environment & Secrets
+.env
+*.local
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,6 @@
+@EcoSync.Api_HostAddress = http://localhost:5247
+
+GET {{EcoSync.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
