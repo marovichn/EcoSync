@@ -1,4 +1,4 @@
-# 🌱 EcoSync: Smart City Renewable Energy Digital Twin & Optimization Engine
+# 🌱 EcoSync: Smart City Renewable Energy Digital Twin & Optimization Engine, Voltron project
 
 ![.NET Core](https://img.shields.io/badge/.NET_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![Python](https://img.shields.io/badge/Python_3.14-3776AB?style=for-the-badge&logo=python&logoColor=white)
