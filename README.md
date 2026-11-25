@@ -18,8 +18,6 @@ By combining high-throughput telemetry ingestion with predictive machine learnin
 ---
 
 ## 🏗️ High-Level System Topology
-*(Replace with your Excalidraw / Draw.io architectural diagram)*
-![EcoSync System Architecture](docs/assets/system_architecture.png)
 
 ---
 
