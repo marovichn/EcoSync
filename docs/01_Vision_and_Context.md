@@ -14,7 +14,7 @@
 
 ## 1.1 Definicija problema: Izazov nestabilnosti obnovljivih izvora
 
-Savremena gradska energetska infrastruktura suočava se sa suštinskim problemom sinhronizacije tokom prelaska sa centralizovanih termoelektrana na distribuirane obnovljive izvore energije (solarni parkovi i vetroelektrane). Za razliku od konvencionalnih termo-blokova čija se snaga može ručno regulisati prema potrebi, proizvodnja iz obnovljivih izvora je **inherentno stohastička** - uslovljena dnevnim solarnim ciklusima, prolaznom oblačnošću i promenama brzine vetra.
+Savremena gradska energetska infrastruktura suočava se sa suštinskim problemom sinhronizacije tokom prelaska sa centralizovanih termoelektrana na distribuirane obnovljive izvore energije (solarni parkovi i vetroelektrane). Za razliku od konvencionalnih termo-blokova čija se snaga može ručno regulisati prema potrebi, proizvodnja iz obnovljivih izvora je **inherentno stohastička** — uslovljena dnevnim solarnim ciklusima, prolaznom oblačnošću i promenama brzine vetra.
 
 Istovremeno, urbana potrošnja električne energije pokazuje izražene, predvidive bihevioralne vrhove: jutarnji porast industrijskog opterećenja, podnevnu komercijalnu potrošnju i strmi večernji skok potrošnje u domaćinstvima. U energetskoj ekonomiji, ova neusklađenost poznata je kao **fenomen „pačje krive“ (*Duck Curve*)**:
 
@@ -75,48 +75,9 @@ $$\min \sum_{t=1}^{H} \left( \gamma_{CO_2} \cdot P_{\text{fossil}}(t) \cdot \Del
 ### 1.3.4 Strukturna dekompozicija optimizacionog modela (Ulazi, Parametri i Izlazi)
 Sa aspekta softverske implementacije u Fazi 3, matematički model se izvršava kao optimizacioni modul linearnog programiranja (*Linear Programming Solver*). Na osnovu fiksnih parametara infrastrukture i dinamičkih ulaznih vektora (trenutne telemetrije i ML prognoze za horizont $H$), solver izračunava optimalne upravljačke odluke za svaki naredni vremenski korak.
 
-```mermaid
-flowchart LR
-    subgraph Params["PARAMETRI (Konstante)"]
-        direction TB
-        P1["Kapacitet baterije<br/>(E_max)"]
-        P2["Granice punjenja<br/>(SoC min / max)"]
-        P3["Max snaga baterije<br/>(P_bat,max)"]
-        P4["Stepen iskorišćenja<br/>(η_chg, η_dis)"]
-        P5["Emisioni faktor<br/>(γ_CO2)"]
-        P6["Korak i horizont<br/>(Δt, H)"]
-    end
-
-    subgraph Inputs["ULAZI (Podaci)"]
-        direction TB
-        I1["Potrošnja zona<br/>(P_demand)"]
-        I2["Solarna energija<br/>(P_solar)"]
-        I3["Energija vetra<br/>(P_wind)"]
-        I4["Početno stanje<br/>baterije SoC(0)"]
-    end
-
-    subgraph Solver["LP OPTIMIZATOR"]
-        direction TB
-        Obj["Funkcija cilja:<br/>Minimizacija CO2"]
-        Con1["Ograničenje 1:<br/>Bilans snage mreže"]
-        Con2["Ograničenje 2:<br/>Dinamika baterije"]
-        Con3["Ograničenje 3:<br/>Fizički limiti"]
-        Obj --- Con1 --- Con2 --- Con3
-    end
-
-    subgraph Outputs["IZLAZI (Odluke)"]
-        direction TB
-        O1["Nalog za punjenje<br/>baterije"]
-        O2["Nalog za pražnjenje<br/>baterije"]
-        O3["Potrebna snaga<br/>fosilne rezerve"]
-        O4["Putanja SoC-a i<br/>ušteda CO2"]
-    end
-
-    Params ==> Solver
-    Inputs ==> Solver
-    Solver ==> Outputs
-```
+![Blok-šema matematičkog modela optimizacije](assets/EcoSyncMathModel.jpg){width=92%}
 *Slika 1.3: Blok-šema matematičkog modela optimizacije sa prikazom fiksnih sistemskih parametara, dinamičkih ulaza i izlaznih upravljačkih odluka.*
+
 #### A. Dinamički ulazi (Inputs)
 Ulazni podaci predstavljaju promenljive veličine koje u sistem pristižu iz IoT edge simulatora (trenutno stanje) i modula mašinskog učenja (prognozirane vrednosti za narednih $H$ koraka):
 
@@ -155,29 +116,9 @@ Izlazi predstavljaju nepoznate promenljive odlučivanja koje algoritam linearnog
 
 Prateći **C4 arhitektonski model (Nivo 1 — Kontekst sistema)**, EcoSync deluje kao centralni nervni sistem koji povezuje proizvođače edge telemetrije, analitičke servise i ljudske donosioce odluka.
 
-```mermaid
-flowchart LR
-    subgraph Spoljno["Edge i okruženje"]
-        direction TB
-        IoT["IoT Edge klaster<br/>Merači zona, solarni<br/>i vetro senzori"]
-        Weather["Vremenska prognoza<br/>Zračenje, vetar i<br/>tarife CO2"]
-    end
-
-    EcoSync("EcoSync platforma<br/>Prijem telemetrije,<br/>Redis, TimescaleDB<br/>i AI optimizator")
-
-    subgraph Korisnici["Korisnici sistema"]
-        direction TB
-        Operator["Dispečer mreže<br/>SCADA web<br/>komandni centar"]
-        Manager["Menadžer održivosti<br/>Terenska mobilna<br/>aplikacija"]
-    end
-
-    IoT -- "Telemetrija<br/>(MQTT / Protobuf)" --> EcoSync
-    Weather -- "Prognoza<br/>(REST / JSON)" --> EcoSync
-    EcoSync -- "Stanje i AI plan<br/>(SignalR)" --> Operator
-    EcoSync -- "Kritični alarmi<br/>(Push)" --> Manager
-    Manager -- "Odobrenje rezervi<br/>(REST API)" --> EcoSync
-```
+![C4 dijagram konteksta sistema](assets/EcoSync01-4.jpg){width=92%}
 *Slika 1.4: C4 dijagram konteksta sistema (Nivo 1) sa prikazom spoljnih izvora podataka, centralne platforme EcoSync i krajnjih korisnika.*
+
 ### Specifikacija aktera i spoljnih sistema
 
 | Akter / Spoljni sistem | Kategorija | Primarna odgovornost i interakcija |
@@ -186,6 +127,7 @@ flowchart LR
 | **Dispečer kontrolnog centra** | Primarni korisnik | Nadgleda tokove energije u realnom vremenu, raspodelu opterećenja po zonama i AI preporuke putem tamne SCADA web konzole. |
 | **Gradski menadžer održivosti** | Izvršni korisnik | Prima push alarme tokom kritičnih deficita zelene energije na mobilnoj aplikaciji i autorizuje aktivaciju rezervnih kapaciteta. |
 | **Meteorološki i tarifni servis** | Spoljni izvor | Dostavlja kratkoročne vremenske prognoze (oblačnost, brzina vetra) koje ML model koristi za predviđanje padova proizvodnje. |
+
 ---
 
 ## 1.5 Ključni operativni scenariji
@@ -215,4 +157,21 @@ Postavljanje jasnih inženjerskih granica osigurava da fokus razvoja ostane usme
 | Energetski bilans grada na makro nivou ($MW$ i $MWh$) | Fizika trofaznog naizmeničnog/jednosmernog napona i reaktivne snage |
 | Prijem MQTT telemetrije visokog protoka i binarna Protobuf serijalizacija | Fizičko ožičenje PLC kontrolera i rasklopna postrojenja u trafostanicama |
 | Vruća/hladna putanja podataka (Redis keš + TimescaleDB hipertabele) | Termička dinamika namotaja transformatora i elektromagnetno modelovanje |
-| ML prognoza
+| ML prognoza opterećenja i linearno programiranje (minimizacija $CO_2$) | Elektrohemijska fizika degradacije baterijskih ćelija |
+| Real-time WebSockets (SignalR), k6 haos testiranje i Terraform IaC | Regulativa obračuna električne energije i zakonsko tarifiranje |
+
+---
+
+## 1.7 Ključni pokazatelji performansi i održivosti (KPI)
+
+Uspešnost sistema meri se konkretnim, ponovljivim metrikama koje su dokumentovane u poglavljima posvećenim testiranju performansi i otpornosti ovog dokumenta:
+
+| Kategorija metrike | Indikator | Ciljana vrednost | Metod verifikacije |
+| :--- | :--- | :--- | :--- |
+| **Propusna moć (Throughput)** | Održivi prijem telemetrije | $\ge 10.000\text{ poruka/sek}$ | k6 distribuirana simulacija opterećenja (Faza 6) |
+| **Latencija** | Ukupno vreme obrade (MQTT $\rightarrow$ Redis) | $< 15\text{ ms}$ ($p99$ latencija) | Prometheus i Grafana telemetrijski histogrami |
+| **Dostupnost** | Oporavak nakon pada brokera | $< 3\text{ sekunde}$ (auto-reconnect) | Chaos testovi gašenja kontejnera (`docker kill`) |
+| **Tačnost AI modela** | Greška kratkoročne prognoze opterećenja | $\text{MAPE} < 5,0\%$ | Scikit-learn unakrsna validacija na test skupu |
+| **Održivost** | Smanjenje rada fosilnih rezervi | $18\% - 25\%$ redukcija $CO_2$ | Komparativna simulacija: AI naspram bazne mreže |
+
+\newpage
