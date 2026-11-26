@@ -65,7 +65,7 @@ def generate_duck_curve():
 
     ax.annotate(
         "Steep Evening Ramp-Up\n(+13,000 MW in ~3.5 hrs)",
-        xy=(18.2, 24800),
+        xy=(17.3, 24800),
         xytext=(12.6, 26800),
         fontsize=9,
         fontweight="bold",

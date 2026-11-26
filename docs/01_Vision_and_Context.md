@@ -108,7 +108,7 @@ Izlazi predstavljaju nepoznate promenljive odlučivanja koje algoritam linearnog
 | $P_{\text{bat, chg}}(t)$ | Optimalna snaga punjenja baterije | $MW$ | Šalje se C# jezgru i SCADA konzoli kao nalog za akumulaciju viška zelene energije. |
 | $P_{\text{bat, dis}}(t)$ | Optimalna snaga pražnjenja baterije | $MW$ | Šalje se C# jezgru i SCADA konzoli kao nalog za pokrivanje vršnog opterećenja. |
 | $P_{\text{fossil}}(t)$ | Potrebna snaga fosilne rezerve | $MW$ | Definiše preostali deficit koji mora pokriti rezervna jedinica (teži ka $0\text{ MW}$). |
-| $SoC(t)$ i $E_{CO_2}$ | Očekivana putanja i emisija | $\%$ i $\text{kg}$ | Izvedene metrike za vizuelizaciju predviđenog stanja baterije i uštede $CO_2$. |
+| $SoC(t)$ i $E_{CO_2}$ | Očekivana putanja i emisija | % i $\text{kg}$ | Izvedene metrike za vizuelizaciju predviđenog stanja baterije i uštede $CO_2$. |
 
 ---
 
