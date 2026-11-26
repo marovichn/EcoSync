@@ -14,7 +14,7 @@
 
 ## 1.1 Definicija problema: Izazov nestabilnosti obnovljivih izvora
 
-Savremena gradska energetska infrastruktura suočava se sa suštinskim problemom sinhronizacije tokom prelaska sa centralizovanih termoelektrana na distribuirane obnovljive izvore energije (solarni parkovi i vetroelektrane). Za razliku od konvencionalnih termo-blokova čija se snaga može ručno regulisati prema potrebi, proizvodnja iz obnovljivih izvora je **inherentno stohastička** — uslovljena dnevnim solarnim ciklusima, prolaznom oblačnošću i promenama brzine vetra.
+Savremena gradska energetska infrastruktura suočava se sa suštinskim problemom sinhronizacije tokom prelaska sa centralizovanih termoelektrana na distribuirane obnovljive izvore energije (solarni parkovi i vetroelektrane). Za razliku od konvencionalnih termo-blokova čija se snaga može ručno regulisati prema potrebi, proizvodnja iz obnovljivih izvora je **inherentno stohastička**, uslovljena dnevnim solarnim ciklusima, prolaznom oblačnošću i promenama brzine vetra.
 
 Istovremeno, urbana potrošnja električne energije pokazuje izražene, predvidive bihevioralne vrhove: jutarnji porast industrijskog opterećenja, podnevnu komercijalnu potrošnju i strmi večernji skok potrošnje u domaćinstvima. U energetskoj ekonomiji, ova neusklađenost poznata je kao **fenomen „pačje krive“ (*Duck Curve*)**:
 
