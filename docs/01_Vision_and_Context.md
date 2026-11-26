@@ -77,47 +77,46 @@ Sa aspekta softverske implementacije u Fazi 3, matematički model se izvršava k
 
 ```mermaid
 flowchart LR
-    subgraph Params["PARAMETRI (Fiksne konstante sistema)"]
+    subgraph Params["PARAMETRI (Konstante)"]
         direction TB
-        P1["Kapacitet baterije: E_max (MWh)"]
-        P2["Granice napunjenosti: SoC_min, SoC_max"]
-        P3["Max snaga baterije: P_bat,max (MW)"]
-        P4["Efikasnost punjenja/pražnjenja: η_chg, η_dis"]
-        P5["Emisioni faktor fosilne rezerve: γ_CO2"]
-        P6["Vremenski korak Δt i horizont H"]
+        P1["Kapacitet baterije<br/>(E_max)"]
+        P2["Granice punjenja<br/>(SoC min / max)"]
+        P3["Max snaga baterije<br/>(P_bat,max)"]
+        P4["Stepen iskorišćenja<br/>(η_chg, η_dis)"]
+        P5["Emisioni faktor<br/>(γ_CO2)"]
+        P6["Korak i horizont<br/>(Δt, H)"]
     end
 
-    subgraph Inputs["ULAZI (Dinamički podaci iz Faze 1 i ML-a)"]
+    subgraph Inputs["ULAZI (Podaci)"]
         direction TB
-        I1["Potrošnja zona: P_zone,i(t) [MW]"]
-        I2["Solarna proizvodnja: P_solar(t) [MW]"]
-        I3["Proizvodnja vetra: P_wind(t) [MW]"]
-        I4["Početno stanje baterije: SoC(0) [%]"]
+        I1["Potrošnja zona<br/>(P_demand)"]
+        I2["Solarna energija<br/>(P_solar)"]
+        I3["Energija vetra<br/>(P_wind)"]
+        I4["Početno stanje<br/>baterije SoC(0)"]
     end
 
-    subgraph Solver["MATEMATIČKI MODEL (LP Optimizator)"]
+    subgraph Solver["LP OPTIMIZATOR"]
         direction TB
-        Obj["Funkcija cilja:\nmin Σ γ_CO2 · P_fossil(t) · Δt"]
-        Con1["Ograničenje 1: Bilans snage\nP_supply(t) ≥ P_demand(t)"]
-        Con2["Ograničenje 2: Dinamika baterije\nSoC(t+Δt) = f(SoC(t), P_chg, P_dis)"]
-        Con3["Ograničenje 3: Fizika i granice\nSoC_min ≤ SoC(t) ≤ SoC_max\n0 ≤ P_chg, P_dis ≤ P_bat,max"]
+        Obj["Funkcija cilja:<br/>Minimizacija CO2"]
+        Con1["Ograničenje 1:<br/>Bilans snage mreže"]
+        Con2["Ograničenje 2:<br/>Dinamika baterije"]
+        Con3["Ograničenje 3:<br/>Fizički limiti"]
         Obj --- Con1 --- Con2 --- Con3
     end
 
-    subgraph Outputs["IZLAZI (Upravljačke odluke za svaki korak t)"]
+    subgraph Outputs["IZLAZI (Odluke)"]
         direction TB
-        O1["Nalog za punjenje: P_bat,chg(t) [MW]"]
-        O2["Nalog za pražnjenje: P_bat,dis(t) [MW]"]
-        O3["Angažovanje fosilne rezerve: P_fossil(t) [MW]"]
-        O4["Izvedeni KPI: Putanja SoC(t) i ukupni CO2 [kg]"]
+        O1["Nalog za punjenje<br/>baterije"]
+        O2["Nalog za pražnjenje<br/>baterije"]
+        O3["Potrebna snaga<br/>fosilne rezerve"]
+        O4["Putanja SoC-a i<br/>ušteda CO2"]
     end
 
     Params ==> Solver
     Inputs ==> Solver
     Solver ==> Outputs
 ```
-*Slika 1.3: Blok-šema matematičkog modela optimizacije sa prikazom fiksnih sistemskih parametara, dinamičkih ulaza i izlaznih upravljačkih promenljivih.*
-
+*Slika 1.3: Blok-šema matematičkog modela optimizacije sa prikazom fiksnih sistemskih parametara, dinamičkih ulaza i izlaznih upravljačkih odluka.*
 #### A. Dinamički ulazi (Inputs)
 Ulazni podaci predstavljaju promenljive veličine koje u sistem pristižu iz IoT edge simulatora (trenutno stanje) i modula mašinskog učenja (prognozirane vrednosti za narednih $H$ koraka):
 
@@ -158,28 +157,27 @@ Prateći **C4 arhitektonski model (Nivo 1 — Kontekst sistema)**, EcoSync deluj
 
 ```mermaid
 flowchart LR
-    subgraph Spoljno["Spoljno okruženje i Edge sloj"]
+    subgraph Spoljno["Edge i okruženje"]
         direction TB
-        IoT["IoT Edge klaster<br/>Merači zona, solarni/vetro<br/>senzori i ESS BMS"]
-        Weather["Meteorološki i tarifni servis<br/>Sunčevo zračenje, brzina vetra<br/>i cena emisije CO2"]
+        IoT["IoT Edge klaster<br/>Merači zona, solarni<br/>i vetro senzori"]
+        Weather["Vremenska prognoza<br/>Zračenje, vetar i<br/>tarife CO2"]
     end
 
-    EcoSync("EcoSync Digital Twin platforma<br/>Prijem telemetrije, Redis keš,<br/>TimescaleDB i AI optimizator")
+    EcoSync("EcoSync platforma<br/>Prijem telemetrije,<br/>Redis, TimescaleDB<br/>i AI optimizator")
 
-    subgraph Korisnici["Operateri i donosioci odluka"]
+    subgraph Korisnici["Korisnici sistema"]
         direction TB
-        Operator["Dispečer kontrolnog centra<br/>SCADA web komandni centar"]
-        Manager["Gradski menadžer održivosti<br/>Terenska mobilna aplikacija"]
+        Operator["Dispečer mreže<br/>SCADA web<br/>komandni centar"]
+        Manager["Menadžer održivosti<br/>Terenska mobilna<br/>aplikacija"]
     end
 
-    IoT -- "Telemetrijski strimovi<br/>(MQTT / Protobuf)" --> EcoSync
-    Weather -- "Prognoza i tarife<br/>(REST / JSON)" --> EcoSync
-    EcoSync -- "Stanje mreže i AI plan<br/>(WebSockets / SignalR)" --> Operator
-    EcoSync -- "Alarmi kritičnog deficita<br/>(Push notifikacije)" --> Manager
-    Manager -- "Odobrenje rezervi<br/>(Autorizovani REST)" --> EcoSync
+    IoT -- "Telemetrija<br/>(MQTT / Protobuf)" --> EcoSync
+    Weather -- "Prognoza<br/>(REST / JSON)" --> EcoSync
+    EcoSync -- "Stanje i AI plan<br/>(SignalR)" --> Operator
+    EcoSync -- "Kritični alarmi<br/>(Push)" --> Manager
+    Manager -- "Odobrenje rezervi<br/>(REST API)" --> EcoSync
 ```
 *Slika 1.4: C4 dijagram konteksta sistema (Nivo 1) sa prikazom spoljnih izvora podataka, centralne platforme EcoSync i krajnjih korisnika.*
-
 ### Specifikacija aktera i spoljnih sistema
 
 | Akter / Spoljni sistem | Kategorija | Primarna odgovornost i interakcija |
