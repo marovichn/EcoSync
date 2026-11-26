@@ -75,7 +75,7 @@ $$\min \sum_{t=1}^{H} \left( \gamma_{CO_2} \cdot P_{\text{fossil}}(t) \cdot \Del
 ### 1.3.4 Strukturna dekompozicija optimizacionog modela (Ulazi, Parametri i Izlazi)
 Sa aspekta softverske implementacije u Fazi 3, matematički model se izvršava kao optimizacioni modul linearnog programiranja (*Linear Programming Solver*). Na osnovu fiksnih parametara infrastrukture i dinamičkih ulaznih vektora (trenutne telemetrije i ML prognoze za horizont $H$), solver izračunava optimalne upravljačke odluke za svaki naredni vremenski korak.
 
-![Blok-šema matematičkog modela optimizacije](assets/EcoSyncMathModel.jpg){width=92%}
+![Blok-šema matematičkog modela optimizacije](assets/EcoSyncMathModel.png){width=92%}
 *Slika 1.3: Blok-šema matematičkog modela optimizacije sa prikazom fiksnih sistemskih parametara, dinamičkih ulaza i izlaznih upravljačkih odluka.*
 
 #### A. Dinamički ulazi (Inputs)
@@ -116,7 +116,7 @@ Izlazi predstavljaju nepoznate promenljive odlučivanja koje algoritam linearnog
 
 Prateći **C4 arhitektonski model (Nivo 1 — Kontekst sistema)**, EcoSync deluje kao centralni nervni sistem koji povezuje proizvođače edge telemetrije, analitičke servise i ljudske donosioce odluka.
 
-![C4 dijagram konteksta sistema](assets/EcoSync01-4.jpg){width=92%}
+![C4 dijagram konteksta sistema](assets/EcoSync01-4.png){width=92%}
 *Slika 1.4: C4 dijagram konteksta sistema (Nivo 1) sa prikazom spoljnih izvora podataka, centralne platforme EcoSync i krajnjih korisnika.*
 
 ### Specifikacija aktera i spoljnih sistema
