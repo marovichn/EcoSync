@@ -20,14 +20,12 @@ Istovremeno, urbana potrošnja električne energije pokazuje izražene, predvidi
 
 1. **Podnevna hiperprodukcija:** Proizvodnja iz solarnih elektrana dostiže maksimum između 11:00 i 14:00 časova, često nadmašujući trenutnu potrošnju grada i primoravajući operatere da odbacuju (*curtailment*) čistu energiju ukoliko nema slobodnih kapaciteta za skladištenje.
 2. **Večernji deficit i nagli uspon opterećenja:** Između 17:00 i 21:00 časa, solarna proizvodnja pada na nulu upravo u trenutku kada potrošnja u domaćinstvima naglo raste, stvarajući akutan energetski deficit.
-3. **Oslanjanje na fosilne vršne elektrane:** Kako bi se sprečili ispadi mreže tokom ovog večernjeg skoka, operateri moraju da pokrenu takozvane vršne elektrane (*peaker plants*) na gas ili ugalj. Ovi rezervni kapaciteti su finansijski skupi, spori za sinhronizaciju i odgovorni za nesrazmerno visoku emisiju ugljen-dioksida ($CO_2$).
-1. [1, 2, 3]
+3. **Oslanjanje na fosilne vršne elektrane:** Kako bi se sprečili ispadi mreže tokom ovog večernjeg skoka, operateri moraju da pokrenu takozvane vršne elektrane (*peaker plants*) na gas ili ugalj. Ovi rezervni kapaciteti su finansijski skupi, spori za sinhronizaciju i odgovorni za nesrazmerno visoku emisiju ugljen-dioksida ($CO_2$) [1, 2].
 
 ![The Duck Curve Net Load Phenomenon](assets/duck_curve.png){width=88%}
 *Slika 1.1: „Pačja kriva“ (Duck Curve) koja ilustruje podnevni višak solarne energije i strmi večernji rast neto opterećenja pri različitim nivoima udela obnovljivih izvora. Prilagođeno prema projekcijama CAISO Net Load modela [1].*
 
-Postojeći sistemi za nadzor gradske mreže (tradicionalne SCADA instalacije) pretežno su **reaktivni i pasivni**. Oni prikazuju trenutnu telemetriju, ali im nedostaju protočni cevovodi podataka visokih performansi i prediktivna inteligencija neophodna za proaktivno planiranje rada gradskih baterija *pre* nego što nastupi deficit obnovljive energije.
-Slični izazovi dnevnog balansiranja opterećenja i integracije varijabilnih obnovljivih izvora prisutni su i u evropskoj sinhronoj zoni (ENTSO-E), uključujući prenosni sistem Republike Srbije [4, 5, 6].
+Postojeći sistemi za nadzor gradske mreže (tradicionalne SCADA instalacije) pretežno su **reaktivni i pasivni**. Oni prikazuju trenutnu telemetriju, ali im nedostaju protočni cevovodi podataka visokih performansi i prediktivna inteligencija neophodna za proaktivno planiranje rada gradskih baterija *pre* nego što nastupi deficit obnovljive energije [4]. Slični izazovi dnevnog balansiranja opterećenja i integracije varijabilnih obnovljivih izvora prisutni su i u evropskoj sinhronoj zoni (ENTSO-E), uključujući prenosni sistem Republike Srbije [3, 5].
 
 ---
 
@@ -35,7 +33,7 @@ Slični izazovi dnevnog balansiranja opterećenja i integracije varijabilnih obn
 
 **EcoSync** je distribuirani **digitalni blizanac** (*Digital Twin*) i sistem za optimizaciju resursa u realnom vremenu, projektovan da premosti jaz između sirove gradske telemetrije i autonomnih odluka u domenu održivosti.
 
-U sistemskom inženjerstvu, digitalni blizanac se suštinski razlikuje od statičkog kontrolnog panela: on održava **živu, dvosmernu digitalnu repliku** stanja fizičke infrastrukture, kontinuirano prihvata telemetriju u realnom vremenu, izvršava simulacije unapred i šalje preskriptivne planove upravljanja nazad operaterima i automatizovanim aktuatorima.[7]
+U sistemskom inženjerstvu, digitalni blizanac se suštinski razlikuje od statičkog kontrolnog panela: on održava **živu, dvosmernu digitalnu repliku** stanja fizičke infrastrukture, kontinuirano prihvata telemetriju u realnom vremenu, izvršava simulacije unapred i šalje preskriptivne planove upravljanja nazad operaterima i automatizovanim aktuatorima [6].
 
 ![3D Smart City Energy Grid Render](assets/3d_smart_city_grid-1.jpg){width=90%}
 *Slika 1.2: Konceptualni 3D prostorni model urbane infrastrukture sistema EcoSync, sa prikazom dinamičkih zona potrošnje, distribuiranih solarnih i vetro klastera i centralnog baterijskog skladišta (ESS).*
@@ -51,7 +49,7 @@ Kako bi fokus ostao na distribuiranoj softverskoj arhitekturi umesto na niskonap
 
 ## 1.3 Makro-model energetskog bilansa i upravljanja resursima
 
-Umesto modelovanja trofazne naizmenične struje, padova napona ili reaktivne impedanse, EcoSync formuliše stabilnost mreže kao **diskretni problem očuvanja energije i minimizacije ugljeničnog otiska** koji se evaluira u fiksnim vremenskim koracima $\Delta t$. Pri balansiranju mreže primenjuje se stroga hijerarhija prioriteta (*Merit Order*): celokupna raspoloživa obnovljiva energija ($G_{\text{solar}}, G_{\text{wind}}$) troši se prva, baterijski sistem ($ESS$) služi kao glavna upravljiva poluga za premošćavanje vremenskih neusklađenosti, dok se fosilna rezervna jedinica ($G_{\text{fossil}}$) aktivira isključivo kao poslednja instanca za pokrivanje preostalog deficita.[8]
+Umesto modelovanja trofazne naizmenične struje, padova napona ili reaktivne impedanse, EcoSync formuliše stabilnost mreže kao **diskretni problem očuvanja energije i minimizacije ugljeničnog otiska** koji se evaluira u fiksnim vremenskim koracima $\Delta t$. Pri balansiranju mreže primenjuje se stroga hijerarhija prioriteta (*Merit Order*): celokupna raspoloživa obnovljiva energija ($G_{\text{solar}}, G_{\text{wind}}$) troši se prva, baterijski sistem ($ESS$) služi kao glavna upravljiva poluga za premošćavanje vremenskih neusklađenosti, dok se fosilna rezervna jedinica ($G_{\text{fossil}}$) aktivira isključivo kao poslednja instanca za pokrivanje preostalog deficita [7].
 
 ### 1.3.1 Trenutni bilans snage
 U svakom diskretnom vremenskom trenutku $t$, ukupna gradska potražnja $P_{\text{demand}}(t)$ kroz $N$ gradskih zona mora biti zadovoljena zbirom obnovljive proizvodnje, neto pražnjenja baterija i dopunske proizvodnje iz fosilnih rezervi:
@@ -116,7 +114,7 @@ Izlazi predstavljaju nepoznate promenljive odlučivanja koje algoritam linearnog
 
 ## 1.4 Kontekst sistema i ekosistem aktera
 
-Prateći **C4 arhitektonski model (Nivo 1 — Kontekst sistema)**[9], EcoSync deluje kao centralni nervni sistem koji povezuje proizvođače edge telemetrije, analitičke servise i ljudske donosioce odluka.
+Prateći **C4 arhitektonski model (Nivo 1 — Kontekst sistema)** [8], EcoSync deluje kao centralni nervni sistem koji povezuje proizvođače edge telemetrije, analitičke servise i ljudske donosioce odluka.
 
 ![C4 dijagram konteksta sistema](assets/EcoSync01-4.png){width=92%}
 *Slika 1.4: C4 dijagram konteksta sistema (Nivo 1) sa prikazom spoljnih izvora podataka, centralne platforme EcoSync i krajnjih korisnika.*
