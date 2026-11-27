@@ -18,7 +18,7 @@ By combining high-throughput telemetry ingestion with predictive machine learnin
 ---
 
 ## 🏗️ High-Level System Topology
-![High-Level System Topology](docs/assets/EcoSync_C4_Containers.png)
+![High-Level System Topology](docs/assets/EcoSync_C4_Containers-eng.png)
 
 
 ---
